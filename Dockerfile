@@ -11,15 +11,15 @@ LABEL maintainer "jboucas@gmail.com"
 ENV ROOTPASS=my_root_pass
 
 # password for mysql
-ENV myqsl_password=bioinf
+ENV myqsl_password=sqpass
 
 # user and password for the database used by nextcloud
 ENV MAINDB=nextcloud
-ENV PASSWDDB=bioinf
+ENV PASSWDDB=ncdbpass
 
 # user and password for the nextcloud administrator
 ENV ADMIN=nextcloud
-ENV ADMINPASS=bioinf
+ENV ADMINPASS=ncpass
 
 # server info for ssl certificates
 ENV SERVER_ADDRESS=nextcloud.myhostname.com
