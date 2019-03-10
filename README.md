@@ -4,7 +4,7 @@ The `Dockerfile` used here starts with `FROM ubuntu` which means that by each bu
 
 As we will be generating ssl certificates with a Certificate Authority you will need to make sure
  your raspberry pi is accessible to the world. For this you will need to make sure your router is 
-**forwarding ports 80 (http) and 443 (https)** to your raspberry pi. For instructions of how to do this consult your router's manual. 
+**forwarding ports 80 (http) and 443 (https)** to your raspberry pi. For instructions on how to do this consult your router's manual. 
 
 Also, as you might not have a fixed IP you might wanna create a public *Hostname* with a *Free Dynamic DNS*. A good place for this is [noip.com](https://www.noip.com) for which you can install the *Dynamic Update Client (DUC)* so that your web address continuously points to your router's external IP address. You will need 2 hostnames, 1 for Nextcloud, 1 for etherpad.
 
