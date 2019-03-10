@@ -16,7 +16,7 @@ Clone the repo:
 cd ~/
 git clone https://github.com/jorgeboucas/docker_nextcloud_etherpad.git
 ```
-Edit the variables in the `Dockerfile` between `##### USER GIVEN VARIABLES #####` and `##### END OF USER GIVEN VARIABLES #####`. You might wanna check this [blog post](https://www.rosehosting.com/blog/generate-password-linux-command-line/) for helping on choosing passwords.
+Edit the variables in the `Dockerfile` between `##### USER GIVEN VARIABLES #####` and `##### END OF USER GIVEN VARIABLES #####`. You might wanna check this [blog post](https://www.rosehosting.com/blog/generate-password-linux-command-line/) for help on choosing passwords.
 ```
 ##### USER GIVEN VARIABLES #####
 
