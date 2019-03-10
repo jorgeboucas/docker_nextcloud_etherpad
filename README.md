@@ -1,6 +1,6 @@
 ## Nextcloud with WebRTC and etherpad with private and group pads 
 
-The `Dockerfile` used here starts with `FROM ubuntu` which means that by each build you run you will be starting from the latest ubuntu image available on Docker. It also means you can use this `Dockerfile` to build this image for diferent architectures eg. x86_64 (Mac); ARM (Rasbperry Pi).
+The `Dockerfile` used here starts with `FROM ubuntu` which means that by each build you run you will be starting from the latest ubuntu image available on Docker. It also means you can use this `Dockerfile` to build this image for diferent architectures eg. x86_64 (Mac); ARM (Raspberry Pi).
 
 As we will be generating ssl certificates with a Certificate Authority you will need to make sure
  your raspberry pi is accessible to the world. For this you will need to make sure your router is 
