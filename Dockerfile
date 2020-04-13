@@ -78,16 +78,16 @@ RUN add-apt-repository ppa:ondrej/php
 
 RUN apt-get update
 
-RUN apt-get install -y php7.1 libapache2-mod-php7.1 php7.1-common \
-libapache2-mod-php7.1 php7.1-mbstring php7.1-xmlrpc php7.1-soap \
-php7.1-apcu php7.1-smbclient php7.1-ldap php7.1-redis php7.1-gd \
-php7.1-xml php7.1-intl php7.1-json php7.1-imagick php7.1-mysql \
-php7.1-cli php7.1-mcrypt php7.1-ldap php7.1-zip php7.1-curl
+RUN apt-get install -y php7.4 libapache2-mod-php7.4 php7.4-common \
+libapache2-mod-php7.4 php7.4-mbstring php7.4-xmlrpc php7.4-soap \
+php7.4-apcu php7.4-smbclient php7.4-redis php7.4-gd \
+php7.4-xml php7.4-intl php7.4-json php7.4-imagick php7.4-mysql \
+php7.4-cli php7.4-ldap php7.4-zip php7.4-curl
 
-RUN sed -i 's/memory_limit = 128M/memory_limit = 256M/g' /etc/php/7.1/apache2/php.ini && \
-sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 64M/g' /etc/php/7.1/apache2/php.ini && \
-sed -i 's/max_execution_time = 30/max_execution_time = 360/g' /etc/php/7.1/apache2/php.ini && \
-sed -i 's/;date.timezone =/date.timezone = America\/Chicago/g' /etc/php/7.1/apache2/php.ini
+RUN sed -i 's/memory_limit = 128M/memory_limit = 256M/g' /etc/php/7.4/apache2/php.ini && \
+sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 64M/g' /etc/php/7.4/apache2/php.ini && \
+sed -i 's/max_execution_time = 30/max_execution_time = 360/g' /etc/php/7.4/apache2/php.ini && \
+sed -i 's/;date.timezone =/date.timezone = America\/Chicago/g' /etc/php/7.4/apache2/php.ini
 
 COPY create.mysql.db.sh  /tmp/create.mysql.db.sh 
 
@@ -98,8 +98,8 @@ rm /tmp/create.mysql.db.sh'
 
 RUN apt-get install -y wget && \
 cd tmp && \
-wget https://download.nextcloud.com/server/releases/nextcloud-15.0.4.tar.bz2 && \
-tar jxvf nextcloud-15.0.4.tar.bz2 && \
+wget https://download.nextcloud.com/server/releases/nextcloud-18.0.3.tar.bz2 && \
+tar jxvf nextcloud-18.0.3.tar.bz2 && \
 mv nextcloud/* /var/www/html/ && \
 chown -R www-data:www-data /var/www/html && \
 chmod -R 755 /var/www/html
@@ -132,8 +132,7 @@ RUN /bin/bash -c 'service mysql restart && service apache2 start && \
 cd /var/www/html && \
 sudo -u www-data php occ  maintenance:install --database "mysql" \
 --database-name "${MAINDB}"  --database-user "${MAINDB}" \
---database-pass "${PASSWDDB}" --admin-user "${ADMIN}" --admin-pass "${ADMINPASS}" && \
-sudo -u www-data php occ app:install spreed'
+--database-pass "${PASSWDDB}" --admin-user "${ADMIN}" --admin-pass "${ADMINPASS}"'
 
 RUN apt-get install -y python-certbot-apache ssl-cert-check
 
@@ -149,11 +148,11 @@ RUN mkdir -p /etc/letsencrypt
 
 RUN echo "root:${ROOTPASS}" | chpasswd
 
-## etherpad installation starts here
+# etherpad installation starts here
 
 RUN apt-get install -y curl git
 
-RUN curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
+RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 
 RUN apt-get install nodejs
 # gcc g++ make
@@ -183,9 +182,9 @@ RUN sudo apt-get install -y rsync binutils
 
 RUN cd /etherpad-lite && \
 bin/installDeps.sh && \
-cd /etherpad-lite/node_modules && \
-npm i ep_mypads && \
-npm i ep_adminpads
+cd /etherpad-lite/node_modules
+#npm i ep_mypads && \
+#npm i ep_adminpads
 # homepage is available at http://localhost:9001/mypads/index.html
 # admin page http://localhost:9001/mypads/?/admin
 
@@ -200,7 +199,7 @@ sed -i 's/ETHERPAD_PORT/'"${ETHERPAD_PORT}"'/g' /etc/apache2/sites-available/eth
 
 RUN /bin/bash -c 'service mysql restart && service apache2 start && \
 a2dissite 000-default.conf && \
-a2ensite etherpad.conf && service apache2 reload && service apache2 restart'
+a2ensite etherpad.conf && service apache2 reload && sleep 5 && service apache2 restart'
 
 ENV PERSISTENT_DATA="/var/www/html /var/lib/mysql /etc/letsencrypt /etherpad-lite"
 
@@ -218,7 +217,21 @@ done
 #cd /etherpad-lite && \
 #node node_modules/ep_etherpad-lite/node/server.js
 
-# entrypoint without with https over certbot
+# entrypoint with https over certbot NEXTCLOUD ONLY
+#ENTRYPOINT for f in ${PERSISTENT_DATA} ; \
+#do for c in $(ls ${f}_ ); \
+#do if [ ! -e ${f}/${c} ] ; then mv ${f}_/${c} ${f}/ ; fi ; \
+#done ; \
+#done && \
+#service mysql restart && service apache2 start && \ 
+#if [ ! -e /etc/letsencrypt/live/${SERVER_ADDRESS}/fullchain.pem ] ; \
+#then certbot --apache --non-interactive --agree-tos -m ${SERVER_ADMIN} -d ${SERVER_ADDRESS} ; a2dissite nextcloud-le-ssl.conf ; \
+#elif [ "$(ssl-cert-check -b -c /etc/letsencrypt/live/${SERVER_ADDRESS}/cert.pem | awk '{ print $2 }')" != "Valid" ] ; then certbot renew ; \
+#fi && \
+#a2dissite nextcloud.conf && a2ensite nextcloud.ssl.conf && \
+#service apache2 reload && service apache2 restart
+
+# entrypoint with https over certbot
 ENTRYPOINT for f in ${PERSISTENT_DATA} ; \
 do for c in $(ls ${f}_ ); \
 do if [ ! -e ${f}/${c} ] ; then mv ${f}_/${c} ${f}/ ; fi ; \
